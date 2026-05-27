@@ -1,16 +1,117 @@
-# React + Vite
+# Creator Connect
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern full-stack creator marketplace platform where shop owners can connect and collaborate with content creators.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Modern responsive UI
+- Creator & Shop Owner roles
+- Secure authentication
+- Login & Signup system
+- Google authentication UI
+- Password visibility toggle
+- Redux state management
+- Protected routes
+- Animated UI using Framer Motion
+- Form validation with React Hook Form
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+### Frontend
+- React.js
+- Redux Toolkit
+- React Router DOM
+- Tailwind CSS
+- Framer Motion
+- React Hook Form
+- Lucide React
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- REST APIs
+
+### Authentication
+- Appwrite Authentication
+
+---
+
+## 📂 Project Structure
+
+```bash
+src/
+│
+├── components/
+├── pages/
+├── store/
+├── Appwrite/
+├── router/
+└── assets/
+```
+
+---
+
+## ⚙️ Installation
+
+### 1 Clone Repository
+
+```bash
+git clone https://github.com/nooralam4919/creator-connect-app.git
+```
+
+### 2 Move into Project
+
+```bash
+cd creator-connect-app
+```
+
+### 3 Install Dependencies
+
+```bash
+npm install
+```
+
+### 4 Run Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🔐 Environment Variables
+
+Create `.env` file:
+
+```env
+VITE_APPWRITE_URL=your_appwrite_url
+VITE_APPWRITE_PROJECT_ID=your_project_id
+```
+
+---
+
+## 📸 Screenshots
+
+Add your project screenshots here.
+
+---
+
+## 🌟 Future Improvements
+
+- Real-time chat system
+- Creator dashboard
+- Payment integration
+- Campaign management
+- Profile verification
+- Notifications system
+
+---
+
+## 👨‍💻 Author
+
+Noor Alam
+
+- GitHub: https://github.com/nooralam4919
