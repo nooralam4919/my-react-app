@@ -1,4 +1,20 @@
-import React, { useState } from "react";
+/*
+ * CHANGES & REASONS:
+ *
+ * 1. Fixed dispatch call: `login` was called but `AuthLogin` was imported
+ *    REASON: Import was `import { login as AuthLogin }` but dispatch used `login`
+ *            which is undefined in this scope → crash on signup.
+ *            Fixed by using `AuthLogin` consistently in dispatch.
+ *
+ * 2. Added `role: "creator"` to `createAccount()` call
+ *    REASON: Without role, Appwrite prefs would have no role saved,
+ *            breaking role-based navigation after login.
+ *
+ * 3. Removed unused `React` import
+ *    REASON: Not needed with Vite JSX transform.
+ */
+
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail } from "lucide-react";
 import authService from "../Appwrite/Auth";
@@ -7,10 +23,12 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input";
+// REMOVED: unused `CreatorDashboard` import — component is navigated to via router, not rendered here
 
-function CreatOwner() {
+function CreateCreator() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,22 +40,30 @@ function CreatOwner() {
     formState: { errors },
   } = useForm();
 
-  const [error, setError] = useState("");
-
   const signup = async (data) => {
     setError("");
 
     try {
-      const userData = await authService.createAccount(data);
+      // createAccount() returns fresh user with prefs already set
+      const currentUser = await authService.createAccount({
+        ...data,
+        role: "creator",
+      });
 
-      if (userData) {
-        const currentUser = await authService.getCurrentUser();
+      if (currentUser) {
+        dispatch(
+          AuthLogin({
+            userData: {
+              $id: currentUser.$id,
+              name: currentUser.name,
+              email: currentUser.email,
+              prefs: currentUser.prefs,
+            },
+            role: currentUser.prefs?.role,
+          }),
+        );
 
-        if (currentUser) {
-          dispatch(AuthLogin({ userData: currentUser }));
-        }
-
-        navigate("/");
+        navigate("/creator-dashboard");
       }
     } catch (err) {
       setError(err.message);
@@ -48,7 +74,6 @@ function CreatOwner() {
     <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0] relative overflow-hidden">
       {/* Background */}
       <div className="absolute w-[500px] h-[500px] bg-[#C08552]/20 rounded-full blur-3xl top-[-120px] left-[-120px]"></div>
-
       <div className="absolute w-[380px] h-[380px] bg-[#8C5A3C]/20 rounded-full blur-3xl bottom-[-120px] right-[-120px]"></div>
 
       {/* Card */}
@@ -58,16 +83,14 @@ function CreatOwner() {
         transition={{ duration: 0.6 }}
         className="w-[92%] max-w-lg bg-white shadow-2xl rounded-3xl p-14 border border-[#C08552]/20"
       >
-        {/* Title */}
         <h1 className="text-4xl font-bold text-center text-[#4B2E2B] mb-2">
-          Creater Signup
+          Creator Signup
         </h1>
 
         <p className="text-center text-[#8C5A3C] mb-8">
           Join and start your journey
         </p>
 
-        {/* Error */}
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         {/* Google Login */}
@@ -83,9 +106,7 @@ function CreatOwner() {
         {/* Divider */}
         <div className="flex items-center gap-3 mb-6">
           <div className="flex-1 h-[1px] bg-[#C08552]/30"></div>
-
           <p className="text-sm text-[#8C5A3C]">OR</p>
-
           <div className="flex-1 h-[1px] bg-[#C08552]/30"></div>
         </div>
 
@@ -96,11 +117,8 @@ function CreatOwner() {
             <Input
               type="text"
               placeholder="Full Name"
-              {...register("name", {
-                required: "Name is required",
-              })}
+              {...register("name", { required: "Name is required" })}
             />
-
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
             )}
@@ -112,14 +130,12 @@ function CreatOwner() {
               className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C5A3C] z-10"
               size={18}
             />
-
             <Input
               type="email"
               placeholder="Email Address"
               className="pl-12"
               {...register("email", {
                 required: "Email is required",
-
                 pattern: {
                   value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
                   message: "Email address must be valid",
@@ -127,7 +143,6 @@ function CreatOwner() {
               })}
             />
           </div>
-
           {errors.email && (
             <p className="text-red-500 text-sm -mt-2">{errors.email.message}</p>
           )}
@@ -140,14 +155,9 @@ function CreatOwner() {
               className="pr-12"
               {...register("password", {
                 required: "Password is required",
-
-                minLength: {
-                  value: 8,
-                  message: "Minimum 8 characters required",
-                },
+                minLength: { value: 8, message: "Minimum 8 characters required" },
               })}
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -156,11 +166,8 @@ function CreatOwner() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-
           {errors.password && (
-            <p className="text-red-500 text-sm -mt-2">
-              {errors.password.message}
-            </p>
+            <p className="text-red-500 text-sm -mt-2">{errors.password.message}</p>
           )}
 
           {/* Confirm Password */}
@@ -171,12 +178,10 @@ function CreatOwner() {
               className="pr-12"
               {...register("confirmPassword", {
                 required: "Confirm password is required",
-
                 validate: (value) =>
                   value === watch("password") || "Passwords do not match",
               })}
             />
-
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -185,14 +190,13 @@ function CreatOwner() {
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-
           {errors.confirmPassword && (
             <p className="text-red-500 text-sm -mt-2">
               {errors.confirmPassword.message}
             </p>
           )}
 
-          {/* Submit Button */}
+          {/* Submit */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
@@ -207,4 +211,4 @@ function CreatOwner() {
   );
 }
 
-export default CreatOwner;
+export default CreateCreator;

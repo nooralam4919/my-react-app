@@ -1,4 +1,4 @@
-import React from "react";
+// Removed unused `React` import — not needed with Vite JSX transform
 
 function Footer(){
     return(
