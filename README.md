@@ -91,13 +91,6 @@ VITE_APPWRITE_URL=your_appwrite_url
 VITE_APPWRITE_PROJECT_ID=your_project_id
 ```
 
----
-
-## 📸 Screenshots
-
-Add your project screenshots here.
-
----
 
 ## 🌟 Future Improvements
 
@@ -110,7 +103,7 @@ Add your project screenshots here.
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Author 
 
 Noor Alam
 
