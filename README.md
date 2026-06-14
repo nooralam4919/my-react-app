@@ -39,7 +39,7 @@ A modern full-stack creator marketplace platform where shop owners can connect a
 
 ---
 
-## 📂 Project Structure
+## 📂 Project Structure.
 
 ```bash
 src/
